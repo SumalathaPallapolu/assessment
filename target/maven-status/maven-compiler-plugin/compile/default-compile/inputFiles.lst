@@ -1,0 +1,11 @@
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/service/impl/BattleServiceImpl.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/dto/MonsterDTO.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/ApplicationConfig.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/model/Monster.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/BattleMostersChallengeApplication.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/repository/MonsterRepository.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/repository/BattleRepository.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/controller/BattleController.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/model/Battle.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/dto/BattleDTO.java
+/Users/csuarez/Documents/projects/FSL/CodingChallenges/assessment-cc-java-sr-01/src/main/java/co/fullstacklabs/battlemonsters/challenge/service/BattleService.java

@@ -38,7 +38,7 @@ public class MonsterServiceTest {
     @Mock
     private ModelMapper mapper;
 
-   //@Test
+   @Test
    public void testGetAll() {
        String monsterName1 = "Monster 1";
        String monsterName2 = "Monster 2";
@@ -93,7 +93,7 @@ public class MonsterServiceTest {
 
      @Test
      void testImportCsvSucessfully() throws Exception {
-         //TOOD: Implement take as a sample data/monstere-correct.csv
+         //TODO: Implement take as a sample data/monstere-correct.csv
          assertEquals(1, 1);
      }
      

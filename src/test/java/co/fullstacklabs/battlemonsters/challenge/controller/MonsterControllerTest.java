@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import co.fullstacklabs.battlemonsters.challenge.ApplicationConfig;
 import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
+import org.springframework.test.web.servlet.MvcResult;
 
 
 /**
@@ -38,11 +39,11 @@ public class MonsterControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //@Test    
+    @Test    
     void shouldFetchAllMonsters() throws Exception {
         this.mockMvc.perform(get(MONSTER_PATH)).andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", Is.is(1)))
-                .andExpect(jsonPath("$[0].name", Is.is("Monster 1")))
+                .andExpect(jsonPath("$[0].name", Is.is("Dead Unicorn")))
                 .andExpect(jsonPath("$[0].attack", Is.is(50)))
                 .andExpect(jsonPath("$[0].defense", Is.is(40)))
                 .andExpect(jsonPath("$[0].hp", Is.is(30)))
@@ -52,37 +53,42 @@ public class MonsterControllerTest {
 
     @Test
     void shouldGetMosterSuccessfully() throws Exception {
-        long id = 1l;
+        long id = 2l;
         this.mockMvc.perform(get(MONSTER_PATH + "/{id}", id)).andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", Is.is("Monster 1")));
+                .andExpect(jsonPath("$.name", Is.is("Old Shark")));
     }
 
     @Test
     void shoulGetMonsterNotExists() throws Exception {
-        long id = 3l;
+        long id = 3000l;
         this.mockMvc.perform(get(MONSTER_PATH + "/{id}", id))
                 .andExpect(status().isNotFound());
     }
     
     @Test
-    void shouldDeleteMonsterSuccessfully() throws Exception {
-        int id = 4;
-        
-        MonsterDTO newMonster = MonsterDTO.builder().id(id).name("Monster 4")
+    void shouldCreateAndDeleteMonsterSuccessfully() throws Exception {
+
+        MonsterDTO newMonster = MonsterDTO.builder().name("Monster 4")
                 .attack(50).defense(30).hp(30).speed(22)
                 .imageUrl("ImageURL1").build();
 
-        this.mockMvc.perform(post(MONSTER_PATH).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newMonster)));
-                
+        MvcResult result = this.mockMvc.perform(post(MONSTER_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newMonster)))
+                .andExpect(status().isCreated())
+                .andReturn();
 
-        this.mockMvc.perform(delete(MONSTER_PATH + "/{id}", id))
-            .andExpect(status().isOk());                
+        String responseContent = result.getResponse().getContentAsString();
+        MonsterDTO createdMonster = objectMapper.readValue(responseContent, MonsterDTO.class);
+        int createdId = createdMonster.getId();
+
+        this.mockMvc.perform(delete(MONSTER_PATH + "/{id}", createdId))
+                .andExpect(status().isOk());
     }
 
     @Test
     void shouldDeleteMonsterNotFound() throws Exception {
-        int id = 5;
+        int id = 5000;
 
         this.mockMvc.perform(delete(MONSTER_PATH + "/{id}", id))
                 .andExpect(status().isNotFound());
@@ -90,13 +96,13 @@ public class MonsterControllerTest {
     
      @Test
      void testImportCsvSucessfully() throws Exception {
-         //TOOD: Implement take as a sample data/monstere-correct.csv
+         //TODO: Implement take as a sample data/monstere-correct.csv
          assertEquals(1, 1);
      }
      
      @Test
      void testImportCsvInexistenctColumns() throws Exception {
-         //TOOD: Implement take as a sample data/monsters-wrong-column.csv
+         //TODO: Implement take as a sample data/monsters-wrong-column.csv
          assertEquals(1, 1);
      }
      

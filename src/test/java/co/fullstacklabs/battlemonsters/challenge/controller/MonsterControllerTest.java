@@ -38,7 +38,7 @@ public class MonsterControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //@Test    
+    // @Test
     void shouldFetchAllMonsters() throws Exception {
         this.mockMvc.perform(get(MONSTER_PATH)).andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", Is.is(1)))

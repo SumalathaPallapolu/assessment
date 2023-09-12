@@ -84,4 +84,9 @@ public class MonsterServiceImpl implements MonsterService {
         }
     }
 
+    @Override
+    public List<MonsterDTO> getAll() {
+        return null;
+    }
+
 }

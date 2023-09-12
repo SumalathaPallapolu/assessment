@@ -18,10 +18,9 @@ public class Challenge2 {
                 .allMatch(d -> 1 <= d && d <= 6);
         if (!valid)
             throw new IllegalArgumentException();
-        Map<Integer, List<Integer>> dices = List.of(dice1, dice2, dice3)
+        Map.Entry<Integer, List<Integer>> mostFrequent = List.of(dice1, dice2, dice3)
                 .stream()
-                .collect(groupingBy(i -> i));
-        Map.Entry<Integer, List<Integer>> mostFrequent = dices
+                .collect(groupingBy(i -> i))
                 .entrySet()
                 .stream()
                 .max((d1, d2) ->  d1.getValue().size() != d2.getValue().size() ?d1.getValue().size() - d2.getValue().size():d1.getKey()-d2.getKey())

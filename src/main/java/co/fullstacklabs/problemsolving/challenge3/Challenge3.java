@@ -2,10 +2,9 @@ package co.fullstacklabs.problemsolving.challenge3;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.data.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -22,7 +21,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class Challenge3 {
     private final int[][] board;
-    private final Node destination;
+    private final Node source = new Node(0,0), destination;
 
     int width() {
         return board[0].length;
@@ -45,17 +44,9 @@ public class Challenge3 {
         public Visit copy() {
             return new Path(new ArrayList<>(this.nodes));
         }
-        /*
-        public String toString() {
-            return "["+nodes.stream().map(Node::toString).collect(joining(", "))+"]";
-        }
-
-         */
-
         public void append(Node n) {
             nodes.add(n);
         }
-
         public Node tail() {
             return nodes.get(nodes.size() - 1);
         }
@@ -89,6 +80,12 @@ public class Challenge3 {
         int value() {
             return board[y][x];
         }
+        List<Node> neighbours() {
+            return Stream.of(up(), down(), left(), right())
+                    .filter(n -> 0 <= n.getX() && n.getX() < width())
+                    .filter(n -> 0 <= n.getY() && n.getY() < height())
+                    .collect(toList());
+        }
     }
 
     public Challenge3(int[][] board) {
@@ -96,14 +93,23 @@ public class Challenge3 {
         destination = new Node(width()-1, height()-1);
     }
 
-    public static int findLessCostPath(int[][] board) {
+    public static int findLessCostPathOld(int[][] board) {
         Challenge3 challenge = new Challenge3(board);
         Visit path = challenge.leastCostPath();
         return path.cost()-challenge.destination.value();
     }
 
+    public static int findLessCostPath(int[][] board) {
+        Challenge3 challenge = new Challenge3(board);
+        return challenge.dijkstra()+challenge.source.value()-challenge.destination.value();
+    }
     Visit leastCostPath() {
-        return minPath(new Path(), new Node(0, 0));
+        return minPath(new Path(), source);
+    }
+
+    int dijkstra() {
+        Pair<Map<Node, Integer>, Map<Node, Node>> dijkstra = dijkstra(source);
+        return dijkstra.getFirst().get(destination);
     }
 
     Visit minPath(Visit visit, Node node) {
@@ -127,9 +133,7 @@ public class Challenge3 {
         }
     }
     List<Node> from(Visit visited, Node n) {
-        return Stream.of(n.up(), n.down(), n.left(), n.right())
-                .filter(p -> 0 <= p.getX() && p.getX() < width())
-                .filter(p -> 0 <= p.getY() && p.getY() < height())
+        return n.neighbours().stream()
                 .filter(p -> !visited.contains(p))
                 .collect(toList());
     }
@@ -140,4 +144,53 @@ public class Challenge3 {
         int cost();
         Visit copy();
     }
+    Pair<Map<Node, Integer>, Map<Node, Node>> dijkstra(Node source) {
+        Map<Node, Integer> distances = new HashMap<>();
+
+        List<Node> vertices = new ArrayList<>();
+        Map<Node, Node> prev = new HashMap<Node, Node>();
+        for (int i=0; i<width(); i++) {
+            for (int j=0; j<height(); j++) {
+                vertices.add(new Node(i, j));
+            }
+        }
+        List<Node> Q = new ArrayList<>(vertices);
+        vertices.forEach(v -> distances.put(v, Integer.MAX_VALUE));
+        distances.put(source, 0);
+        while (!Q.isEmpty()) {
+            Node u = Q.stream().min(comparingInt(v -> distances.get(v))).get();
+            Q.remove(u);
+            u.neighbours().stream()
+                    .filter(v -> Q.contains(v))
+                    .forEach(v -> {
+                        int alt = distances.get(u)+v.value();
+                        if (alt < distances.get(v)) {
+                            distances.put(v, alt);
+                            prev.put(v, u);
+                        }
+                    });
+        }
+        return Pair.of(distances, prev);
+    }
+    /*
+     1  function Dijkstra(Graph, source):
+ 2
+ 3      for each vertex v in Graph.Vertices:
+ 4          dist[v] ← INFINITY
+ 5          prev[v] ← UNDEFINED
+ 6          add v to Q
+ 7      dist[source] ← 0
+ 8
+ 9      while Q is not empty:
+10          u ← vertex in Q with min dist[u]
+11          remove u from Q
+12
+13          for each neighbor v of u still in Q:
+14              alt ← dist[u] + Graph.Edges(u, v)
+15              if alt < dist[v]:
+16                  dist[v] ← alt
+17                  prev[v] ← u
+18
+19      return dist[], prev[]
+     */
 }

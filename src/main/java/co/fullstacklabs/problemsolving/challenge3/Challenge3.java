@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingInt;
@@ -30,24 +32,49 @@ public class Challenge3 {
     }
 
     @AllArgsConstructor
-    class Path {
-        final List<Node> nodes ;
+    class Path implements Visit {
+//        final List<Node> nodes ;
+        private final boolean[][] belongs;
 
         Path() {
-            nodes = new ArrayList<>();
+            belongs = new boolean[height()][width()];
         }
-        int cost() {
-            return nodes.stream().mapToInt(Node::value)
-                    .sum();
+        public int cost() {
+            return IntStream.range(0, height())
+                    .boxed()
+                    .flatMap(y -> IntStream.range(0, width())
+                            .boxed()
+                            .map(x -> new Node(x, y)))
+                    .filter(n -> belongs[n.y][n.x])
+                    .mapToInt(n -> n.value())
+                     .sum();
         }
-        Path copy() {
-            return new Path(new ArrayList<>(this.nodes));
+        public Visit copy() {
+//            Arrays.cop
+            Path p = new Path();
+            for (int i = 0; i < belongs.length; i++)
+                p.belongs[i] = Arrays.copyOf(belongs[i], belongs[i].length);
+            return p;
         }
+        /*
         public String toString() {
-            return "["+nodes.stream().map(n -> n.toString()).collect(joining(", "))+"]";
+            return "["+nodes.stream().map(Node::toString).collect(joining(", "))+"]";
         }
-        Node tail() {
-            return nodes.get(nodes.size() - 1);
+
+         */
+
+        public void append(Node n) {
+            belongs[n.getY()][n.getX()] = true;
+        }
+
+        public Node tail() {
+            return null;
+            // IntStream.range(0, height()).boxed().flatMap(y -> IntStream.range(0, width()).boxed().map(x -> new Node(x, y)));
+            // return nodes.get(nodes.size() - 1);
+        }
+
+        public boolean contains(Node node) {
+            return belongs[node.getY()][node.getX()];
         }
     }
 
@@ -84,37 +111,44 @@ public class Challenge3 {
 
     public static int findLessCostPath(int[][] board) {
         Challenge3 challenge = new Challenge3(board);
-        Path path = challenge.leastCostPath();
+        Visit path = challenge.leastCostPath();
         return path.cost()-challenge.destination.value();
     }
 
-    Path leastCostPath() {
+    Visit leastCostPath() {
         return minPath(new Path(), new Node(0, 0));
     }
 
-    Path minPath(Path visit, Node node) {
-        visit.nodes.add(node);
+    Visit minPath(Visit visit, Node node) {
+        visit.append(node);
         if (node.equals(destination))
             return visit;
         return from(visit, node)
-                .stream().map(next -> minPath(visit.copy(), next))
-                .filter(path1 -> path1.tail().equals(destination))
+                .stream().parallel().map(next -> minPath(visit.copy(), next))
+                .filter(path1 -> path1.contains(destination))
                 .collect(toList()).stream()
-                .min(comparingInt(Path::cost)).orElseGet(() -> new Infinite());
+                .min(comparingInt(Visit::cost)).orElseGet(Infinite::new);
     }
     class Infinite extends Path {
-        int cost() {
-            return 5000;
+        public int cost() {
+            return 500000;
         }
-        Node tail() {
+        public Node tail() {
             return new Node(-1, -1);
         }
     }
-    List<Node> from(Path visited, Node n) {
+    List<Node> from(Visit visited, Node n) {
         return Stream.of(n.up(), n.down(), n.left(), n.right())
                 .filter(p -> 0 <= p.getX() && p.getX() < width())
                 .filter(p -> 0 <= p.getY() && p.getY() < height())
-                .filter(p -> !visited.nodes.contains(p))
+                .filter(p -> !visited.contains(p))
                 .collect(toList());
+    }
+    interface Visit {
+        void append(Node n);
+        Node tail();
+        boolean contains(Node n);
+        int cost();
+        Visit copy();
     }
 }

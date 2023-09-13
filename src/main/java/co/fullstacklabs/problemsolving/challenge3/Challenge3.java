@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.util.Pair;
 
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-
+import static java.util.stream.IntStream.range;
 
 
 /**
@@ -47,10 +48,6 @@ public class Challenge3 {
         public void append(Node n) {
             nodes.add(n);
         }
-        public Node tail() {
-            return nodes.get(nodes.size() - 1);
-        }
-
         public boolean contains(Node node) {
             return nodes.contains(node);
         }
@@ -128,9 +125,6 @@ public class Challenge3 {
         public int cost() {
             return 500000;
         }
-        public Node tail() {
-            return new Node(-1, -1);
-        }
     }
     List<Node> from(Visit visited, Node n) {
         return n.neighbours().stream()
@@ -139,23 +133,15 @@ public class Challenge3 {
     }
     interface Visit {
         void append(Node n);
-        Node tail();
         boolean contains(Node n);
         int cost();
         Visit copy();
     }
     Pair<Map<Node, Integer>, Map<Node, Node>> dijkstra(Node source) {
         Map<Node, Integer> distances = new HashMap<>();
-
-        List<Node> vertices = new ArrayList<>();
-        Map<Node, Node> prev = new HashMap<Node, Node>();
-        for (int i=0; i<width(); i++) {
-            for (int j=0; j<height(); j++) {
-                vertices.add(new Node(i, j));
-            }
-        }
-        List<Node> Q = new ArrayList<>(vertices);
-        vertices.forEach(v -> distances.put(v, Integer.MAX_VALUE));
+        Map<Node, Node> prev = new HashMap<>();
+        List<Node> Q = new ArrayList<>(allVertices());
+        allVertices().forEach(v -> distances.put(v, Integer.MAX_VALUE));
         distances.put(source, 0);
         while (!Q.isEmpty()) {
             Node u = Q.stream().min(comparingInt(v -> distances.get(v))).get();
@@ -171,6 +157,10 @@ public class Challenge3 {
                     });
         }
         return Pair.of(distances, prev);
+    }
+    List<Node> allVertices() {
+        return range(0, width()).boxed().flatMap(i -> range(0, height()).boxed().map(j -> new Node(i, j)))
+                .collect(toList());
     }
     /*
      1  function Dijkstra(Graph, source):

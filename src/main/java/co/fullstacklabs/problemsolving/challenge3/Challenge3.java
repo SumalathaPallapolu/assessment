@@ -46,7 +46,9 @@ public class Challenge3 {
         public String toString() {
             return "["+nodes.stream().map(n -> n.toString()).collect(joining(", "))+"]";
         }
-
+        Node tail() {
+            return nodes.get(nodes.size() - 1);
+        }
     }
 
     @Data
@@ -85,46 +87,28 @@ public class Challenge3 {
         Path path = challenge.leastCostPath();
         return path.cost()-challenge.destination.value();
     }
-    /*
-    public static int findLessCostPathPopo(int[][] board) {
-        return new Challenge3(board).leastCostFromStart();
-    }
 
-
-    int leastCostFromStart() {
-        return leastCostFrom(new Path(new ArrayList<>()), new Node(0, 0));
-    }
-    int leastCostFrom(Path visited, Node node) {
-        visited.nodes.add(node);
-        System.out.print("p: "+visited+", visiting "+node);
-        if (node.equals(destination)) {
-            System.out.println("loto: "+destination);
-            return node.value();
-        }
-        Integer minFrom = from(visited, node)
-                .stream()
-                .map(next -> leastCostFrom(visited.copy(), next))
-                .min((a, b) -> a-b)
-                .orElse(node.value());
-        System.out.println(", min from "+node+": "+minFrom);
-        return node.value()+ minFrom;
-    }
- */
     Path leastCostPath() {
-        return visit(new Path(), new Node(0, 0))
-                .stream()
-                .filter(path1 -> path1.nodes.get(path1.nodes.size() - 1).equals(destination))
-                .collect(toList()).stream()
-                .min(comparingInt(Path::cost)).get();
+        return minPath(new Path(), new Node(0, 0));
     }
 
-    List<Path> visit(Path path, Node node) {
-        path.nodes.add(node);
+    Path minPath(Path visit, Node node) {
+        visit.nodes.add(node);
         if (node.equals(destination))
-            return List.of(path);
-        return from(path, node)
-                .stream().flatMap(next -> visit(path.copy(), next).stream())
-                .collect(toList());
+            return visit;
+        return from(visit, node)
+                .stream().map(next -> minPath(visit.copy(), next))
+                .filter(path1 -> path1.tail().equals(destination))
+                .collect(toList()).stream()
+                .min(comparingInt(Path::cost)).orElseGet(() -> new Infinite());
+    }
+    class Infinite extends Path {
+        int cost() {
+            return 5000;
+        }
+        Node tail() {
+            return new Node(-1, -1);
+        }
     }
     List<Node> from(Path visited, Node n) {
         return Stream.of(n.up(), n.down(), n.left(), n.right())

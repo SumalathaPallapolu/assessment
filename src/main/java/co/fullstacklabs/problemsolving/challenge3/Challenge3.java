@@ -33,28 +33,17 @@ public class Challenge3 {
 
     @AllArgsConstructor
     class Path implements Visit {
-//        final List<Node> nodes ;
-        private final boolean[][] belongs;
+        final List<Node> nodes ;
 
         Path() {
-            belongs = new boolean[height()][width()];
+            nodes = new ArrayList<>(width()*height());
         }
         public int cost() {
-            return IntStream.range(0, height())
-                    .boxed()
-                    .flatMap(y -> IntStream.range(0, width())
-                            .boxed()
-                            .map(x -> new Node(x, y)))
-                    .filter(n -> belongs[n.y][n.x])
-                    .mapToInt(n -> n.value())
-                     .sum();
+            return nodes.stream().mapToInt(Node::value)
+                    .sum();
         }
         public Visit copy() {
-//            Arrays.cop
-            Path p = new Path();
-            for (int i = 0; i < belongs.length; i++)
-                p.belongs[i] = Arrays.copyOf(belongs[i], belongs[i].length);
-            return p;
+            return new Path(new ArrayList<>(this.nodes));
         }
         /*
         public String toString() {
@@ -64,17 +53,15 @@ public class Challenge3 {
          */
 
         public void append(Node n) {
-            belongs[n.getY()][n.getX()] = true;
+            nodes.add(n);
         }
 
         public Node tail() {
-            return null;
-            // IntStream.range(0, height()).boxed().flatMap(y -> IntStream.range(0, width()).boxed().map(x -> new Node(x, y)));
-            // return nodes.get(nodes.size() - 1);
+            return nodes.get(nodes.size() - 1);
         }
 
         public boolean contains(Node node) {
-            return belongs[node.getY()][node.getX()];
+            return nodes.contains(node);
         }
     }
 
@@ -124,7 +111,9 @@ public class Challenge3 {
         if (node.equals(destination))
             return visit;
         return from(visit, node)
-                .stream().parallel().map(next -> minPath(visit.copy(), next))
+                .stream().parallel()
+                .filter(n -> !visit.contains(n))
+                .map(next -> minPath(visit.copy(), next))
                 .filter(path1 -> path1.contains(destination))
                 .collect(toList()).stream()
                 .min(comparingInt(Visit::cost)).orElseGet(Infinite::new);

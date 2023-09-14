@@ -6,6 +6,7 @@ import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
 import co.fullstacklabs.battlemonsters.challenge.model.Battle;
 import co.fullstacklabs.battlemonsters.challenge.model.Monster;
 import co.fullstacklabs.battlemonsters.challenge.repository.BattleRepository;
+import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.BattleTestBuilder;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -94,6 +95,8 @@ public class BattleControllerTest {
     }
     @Autowired
     BattleRepository battleRepository;
+    @Autowired
+    MonsterRepository monsterRepository;
     @Test
     void shouldDeleteBattleSuccessfully() throws Exception {
         Monster godzilla = MonsterTestBuilder.builder()
@@ -105,8 +108,12 @@ public class BattleControllerTest {
         Battle battle = BattleTestBuilder.builder()
                 .monsterA(godzilla)
                 .monsterB(mothra)
+                .monsterWinner(godzilla)
                 .build();
+        monsterRepository.save(godzilla);
+        monsterRepository.save(mothra);
         battleRepository.save(battle);
+
         mockMvc
                 .perform(delete(BATTLE_PATH+"/"+battle.getId()))
                 .andExpect(status().isOk());

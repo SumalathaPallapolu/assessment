@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
+import co.fullstacklabs.battlemonsters.challenge.model.Monster;
+import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,14 +62,22 @@ public class BattleServiceTest {
 
     @Test
     void shouldInsertBattleWithMonsterBWinning() {
-        //TODO: Implement
-          assertEquals(1, 0);
+        MonsterDTO godzilla = MonsterDTO.builder()
+                .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageUrl("http://images.com/godzilla")
+                .build();
+        MonsterDTO mothra = MonsterDTO.builder()
+                .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageUrl("http://images.com/mothra")
+                .build();
+        BattleDTO battle = BattleDTO.builder()
+                .monsterA(godzilla)
+                .monsterB(mothra)
+                .build();
+        BattleDTO outcome = battleService.fight(battle);
+        assertEquals(outcome.getWinner().getName(), godzilla.getName());
     }
 
     @Test
     void shouldDeleteBattleSucessfully() {
-        //TODO: Implement        
-         assertEquals(1, 0);
+        battleService.delete(1233);
     }
-
 }

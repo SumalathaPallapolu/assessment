@@ -11,10 +11,7 @@ import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
  * @since 2022-10
  */
 public interface BattleService {
-    
     List<BattleDTO> getAll();
-
     BattleDTO fight(BattleDTO battleDTO);
-
-
+    void delete(int id);
 }

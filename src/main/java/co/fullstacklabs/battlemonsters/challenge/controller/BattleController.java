@@ -2,9 +2,7 @@ package co.fullstacklabs.battlemonsters.challenge.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import co.fullstacklabs.battlemonsters.challenge.dto.BattleDTO;
 import co.fullstacklabs.battlemonsters.challenge.service.BattleService;
@@ -28,5 +26,11 @@ public class BattleController {
     public List<BattleDTO> getAll() {
         return battleService.getAll();
     }
+    @PostMapping
+    public BattleDTO fight(@RequestBody BattleDTO battleDTO) {
+        return battleService.fight(battleDTO);
+    }
+
+
     
 }

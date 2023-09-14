@@ -1,6 +1,7 @@
 package co.fullstacklabs.battlemonsters.challenge.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class MonsterController {
     
     @Autowired
     private MonsterService monsterService;
+
+    @GetMapping("/")
+    public List<MonsterDTO> findAll() {
+        return monsterService.getAll();
+    }
 
     @GetMapping("/{id}")
     public MonsterDTO getMonsterById(@PathVariable("id") int monsterId) {

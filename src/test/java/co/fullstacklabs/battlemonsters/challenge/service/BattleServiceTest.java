@@ -43,7 +43,6 @@ public class BattleServiceTest {
 
     @Test
     public void testGetAll() {
-        
         Battle battle1 = BattleTestBuilder.builder().id(1).build();
         Battle battle2 = BattleTestBuilder.builder().id(2).build();
 

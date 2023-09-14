@@ -1,12 +1,9 @@
 package co.fullstacklabs.battlemonsters.challenge.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import co.fullstacklabs.battlemonsters.challenge.ApplicationConfig;
+import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
+import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import co.fullstacklabs.battlemonsters.challenge.ApplicationConfig;
-import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 /**
@@ -43,10 +39,12 @@ public class MonsterControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private MonsterRepository monsterRepository;
 
-    // @Test
+    @Test
     void shouldFetchAllMonsters() throws Exception {
-        this.mockMvc.perform(get(MONSTER_PATH)).andExpect(status().isOk())
+        this.mockMvc.perform(get(MONSTER_PATH+"/")).andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", Is.is(1)))
                 .andExpect(jsonPath("$[0].name", Is.is("Monster 1")))
                 .andExpect(jsonPath("$[0].attack", Is.is(50)))
@@ -64,7 +62,7 @@ public class MonsterControllerTest {
     }
 
     @Test
-    void shoulGetMonsterNotExists() throws Exception {
+    void shouldGetMonsterNotExists() throws Exception {
         long id = 3l;
         this.mockMvc.perform(get(MONSTER_PATH + "/{id}", id))
                 .andExpect(status().isNotFound());

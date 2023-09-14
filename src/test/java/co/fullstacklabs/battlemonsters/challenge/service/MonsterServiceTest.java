@@ -1,7 +1,5 @@
 package co.fullstacklabs.battlemonsters.challenge.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +21,6 @@ import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
 import co.fullstacklabs.battlemonsters.challenge.service.impl.MonsterServiceImpl;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
 
-import javax.validation.Validator;
-
 /**
  * @author FullStack Labs
  * @version 1.0
@@ -40,8 +36,6 @@ public class MonsterServiceTest {
 
     @Mock
     private ModelMapper mapper;
-    @Mock
-    public Validator validator ;
 
    @Test
    public void testGetAll() {

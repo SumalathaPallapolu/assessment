@@ -41,24 +41,6 @@ public class BattleControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-/*
-    @BeforeEach
-    public void prepare() {
-        Monster godzilla = MonsterTestBuilder.builder()
-                .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageURL("http://images.com/godzilla")
-                .build();
-        Monster mothra = MonsterTestBuilder.builder()
-                .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageURL("http://images.com/mothra")
-                .build();
-        Battle battle = BattleTestBuilder.builder()
-                .monsterA(godzilla)
-                .monsterB(mothra)
-                .monsterWinner(godzilla)
-                .build();
-
-        battleRepository.save(battle);
-    }
-    */
 
     @Test
     void shouldFetchAllBattles() throws Exception {
@@ -72,7 +54,6 @@ public class BattleControllerTest {
 
         assertEquals(1, 0);
     }
-
     @Test
     void shouldInsertBattleWithMonsterBWinning() throws Exception {
         MonsterDTO godzilla = MonsterDTO.builder()

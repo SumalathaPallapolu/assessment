@@ -40,25 +40,25 @@ public class BattleControllerTest {
     @Test
     void shouldFailBattleWithInexistentMonster() {
         //TODO: Implement
-        assertEquals(1, 1);
+        assertEquals(1, 0);
     }
 
 
     @Test
     void shouldInsertBattleWithMonsterBWinning() {
         //TODO: Implement
-        assertEquals(1, 1);
+        assertEquals(1, 0);
     }
 
     @Test
     void shouldDeleteBattleSucessfully() {
         //TODO: Implement
-        assertEquals(1, 1);
+        assertEquals(1, 0);
     }
 
     @Test
     void shouldFailDeletingInexistentBattle() {
         //TODO: Implement
-        assertEquals(1, 1);
+        assertEquals(1, 0);
     }
 }

@@ -61,13 +61,13 @@ public class BattleServiceTest {
     @Test
     void shouldInsertBattleWithMonsterBWinning() {
         //TODO: Implement
-          assertEquals(1, 1);    
+          assertEquals(1, 0);
     }
 
     @Test
     void shouldDeleteBattleSucessfully() {
         //TODO: Implement        
-         assertEquals(1, 1);    
+         assertEquals(1, 0);
     }
 
 }

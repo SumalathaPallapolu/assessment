@@ -2,6 +2,7 @@ package co.fullstacklabs.battlemonsters.challenge.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,8 @@ import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
 import co.fullstacklabs.battlemonsters.challenge.service.impl.MonsterServiceImpl;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
 
+import javax.validation.Validator;
+
 /**
  * @author FullStack Labs
  * @version 1.0
@@ -37,8 +40,10 @@ public class MonsterServiceTest {
 
     @Mock
     private ModelMapper mapper;
+    @Mock
+    public Validator validator ;
 
-   //@Test
+   @Test
    public void testGetAll() {
        String monsterName1 = "Monster 1";
        String monsterName2 = "Monster 2";
@@ -93,9 +98,8 @@ public class MonsterServiceTest {
 
      @Test
      void testImportCsvSucessfully() throws Exception {
-         //TOOD: Implement take as a sample data/monstere-correct.csv
-         assertEquals(1, 1);
+         // Implement take as a sample data/monster-correct.
+         monsterService.importFromInputStream(new FileInputStream("data/monsters-correct.csv"));
      }
-     
 
 }

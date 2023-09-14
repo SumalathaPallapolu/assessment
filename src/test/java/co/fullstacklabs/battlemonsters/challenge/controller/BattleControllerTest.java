@@ -108,7 +108,6 @@ public class BattleControllerTest {
         Battle battle = BattleTestBuilder.builder()
                 .monsterA(godzilla)
                 .monsterB(mothra)
-                .monsterWinner(godzilla)
                 .build();
         monsterRepository.save(godzilla);
         monsterRepository.save(mothra);

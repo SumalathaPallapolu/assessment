@@ -47,6 +47,11 @@ public class BattleServiceImpl implements BattleService {
     @Override
     public BattleDTO fight(BattleDTO battleDTO) {
         Battle battle = modelMapper.map(battleDTO, Battle.class);
+        this.fight(battle);
+        return modelMapper.map(battle, BattleDTO.class);
+    }
+
+    public Battle fight(Battle battle) {
         monsterRepository.save(battle.getMonsterA());
         monsterRepository.save(battle.getMonsterB());
 
@@ -70,7 +75,7 @@ public class BattleServiceImpl implements BattleService {
 
         battle.setWinner(winner.get());
         battleRepository.save(battle);
-        return modelMapper.map(battle, BattleDTO.class);
+        return battle;
     }
 
     @Override

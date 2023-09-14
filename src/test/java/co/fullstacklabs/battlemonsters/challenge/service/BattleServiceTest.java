@@ -1,5 +1,6 @@
 package co.fullstacklabs.battlemonsters.challenge.service;
 
+import static co.fullstacklabs.battlemonsters.challenge.testbuilders.BattleTestBuilder.builder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -30,7 +31,7 @@ import co.fullstacklabs.battlemonsters.challenge.testbuilders.BattleTestBuilder;
  */
 @ExtendWith(MockitoExtension.class)
 public class BattleServiceTest {
-    
+
     @InjectMocks
     public BattleServiceImpl battleService;
 
@@ -46,34 +47,43 @@ public class BattleServiceTest {
 
     @Test
     public void testGetAll() {
-        Battle battle1 = BattleTestBuilder.builder().id(1).build();
-        Battle battle2 = BattleTestBuilder.builder().id(2).build();
+        Battle battle1 = builder().id(1).build();
+        Battle battle2 = builder().id(2).build();
 
         List<Battle> battleList = Lists.newArrayList(battle1, battle2);
         Mockito.when(battleRepository.findAll()).thenReturn(battleList);
-        
+
         battleService.getAll();
 
         Mockito.verify(battleRepository).findAll();
         Mockito.verify(mapper).map(battleList.get(0), BattleDTO.class);
-        Mockito.verify(mapper).map(battleList.get(1), BattleDTO.class);        
+        Mockito.verify(mapper).map(battleList.get(1), BattleDTO.class);
     }
-    
+
 
     @Test
     void shouldInsertBattleWithMonsterBWinning() {
+        /*
         MonsterDTO godzilla = MonsterDTO.builder()
                 .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageUrl("http://images.com/godzilla")
                 .build();
         MonsterDTO mothra = MonsterDTO.builder()
                 .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageUrl("http://images.com/mothra")
                 .build();
-        BattleDTO battle = BattleDTO.builder()
+        BattleDTO battleDTO = BattleDTO.builder()
                 .monsterA(godzilla)
                 .monsterB(mothra)
                 .build();
-        BattleDTO outcome = battleService.fight(battle);
-        assertEquals(outcome.getWinner().getName(), godzilla.getName());
+*/
+        Battle battle1 = builder()
+                .monsterA(MonsterTestBuilder.builder()
+                        .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageURL("http://images.com/godzilla")
+                        .build())
+                .monsterB(MonsterTestBuilder.builder()
+                        .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageURL("http://images.com/mothra").build())
+                .build();
+        Battle outcome = battleService.fight(battle1);
+        assertEquals(outcome.getWinner().getName(), battle1.getMonsterA().getName());
     }
 
     @Test

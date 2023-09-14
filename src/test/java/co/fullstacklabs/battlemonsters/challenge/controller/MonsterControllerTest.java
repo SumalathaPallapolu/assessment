@@ -3,8 +3,10 @@ package co.fullstacklabs.battlemonsters.challenge.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.hamcrest.core.Is;
@@ -14,12 +16,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import co.fullstacklabs.battlemonsters.challenge.ApplicationConfig;
 import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.HashMap;
 
 
 /**
@@ -63,21 +71,21 @@ public class MonsterControllerTest {
         this.mockMvc.perform(get(MONSTER_PATH + "/{id}", id))
                 .andExpect(status().isNotFound());
     }
-    
+
     @Test
     void shouldDeleteMonsterSuccessfully() throws Exception {
         int id = 4;
-        
+
         MonsterDTO newMonster = MonsterDTO.builder().id(id).name("Monster 4")
                 .attack(50).defense(30).hp(30).speed(22)
                 .imageUrl("ImageURL1").build();
 
         this.mockMvc.perform(post(MONSTER_PATH).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newMonster)));
-                
+
 
         this.mockMvc.perform(delete(MONSTER_PATH + "/{id}", id))
-            .andExpect(status().isOk());                
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -87,18 +95,34 @@ public class MonsterControllerTest {
         this.mockMvc.perform(delete(MONSTER_PATH + "/{id}", id))
                 .andExpect(status().isNotFound());
     }
-    
-     @Test
-     void testImportCsvSucessfully() throws Exception {
-         //TOOD: Implement take as a sample data/monstere-correct.csv
-         assertEquals(1, 1);
-     }
-     
-     @Test
-     void testImportCsvInexistenctColumns() throws Exception {
-         //TOOD: Implement take as a sample data/monsters-wrong-column.csv
-         assertEquals(1, 1);
-     }
-     
+
+    @Test
+    void testImportCsvSuccessfully() throws Exception {
+        // Implement take as a sample data/monsters-correct.csv
+        File initialFile = new File("data/monsters-correct.csv");
+        InputStream targetStream = new FileInputStream(initialFile);
+        HashMap<String, String> contentTypeParams = new HashMap<>();
+        contentTypeParams.put("boundary", "265001916915712");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", targetStream);
+        mockMvc.perform(fileUpload(MONSTER_PATH + "/import")
+                        .file(mockMultipartFile)
+                .contentType(new MediaType("multipart", "form-data", contentTypeParams))
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void testImportCsvNonexistentColumns() throws Exception {
+        //Implement take as a sample data/monsters-wrong-column.csv
+        File initialFile = new File("data/monsters-wrong-column.csv");
+        InputStream targetStream = new FileInputStream(initialFile);
+        HashMap<String, String> contentTypeParams = new HashMap<>();
+        contentTypeParams.put("boundary", "265001916915724");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", targetStream);
+        mockMvc.perform(post(MONSTER_PATH + "/import")
+                .content(mockMultipartFile.getBytes())
+                .contentType(new MediaType("multipart", "form-data", contentTypeParams))
+        ).andExpect(status().is4xxClientError());
+    }
+
 
 }

@@ -7,8 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,10 +116,13 @@ public class MonsterControllerTest {
         HashMap<String, String> contentTypeParams = new HashMap<>();
         contentTypeParams.put("boundary", "265001916915724");
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", targetStream);
-        mockMvc.perform(post(MONSTER_PATH + "/import")
-                .content(mockMultipartFile.getBytes())
+        mockMvc.perform(fileUpload(MONSTER_PATH + "/import")
+                .file(mockMultipartFile)
                 .contentType(new MediaType("multipart", "form-data", contentTypeParams))
-        ).andExpect(status().is4xxClientError());
+        ).andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("violations[0].message").value("may not be null"))
+                .andExpect(jsonPath("violations[0].details").value("defense"))
+                .andReturn();
     }
 
 

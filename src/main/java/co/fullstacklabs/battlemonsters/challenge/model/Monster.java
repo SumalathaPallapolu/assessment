@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ public class Monster {
 
     @Column(name = "ATTACK", nullable = false)
     private Integer attack;
-
+    @NotNull
     @Column(name = "DEFENSE", nullable = false)
     private Integer defense;
 

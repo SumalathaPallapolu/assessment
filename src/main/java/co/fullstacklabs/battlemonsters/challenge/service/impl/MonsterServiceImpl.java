@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,10 @@ import co.fullstacklabs.battlemonsters.challenge.model.Monster;
 import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
 import co.fullstacklabs.battlemonsters.challenge.service.MonsterService;
 
+import javax.validation.*;
+
+import static java.util.stream.Collectors.toList;
+
 /**
  * @author FullStack Labs
  * @version 1.0
@@ -30,15 +36,19 @@ public class MonsterServiceImpl implements MonsterService {
 
     private MonsterRepository monsterRepository;
     private ModelMapper modelMapper;
-
-    public MonsterServiceImpl(MonsterRepository monsterRepository, ModelMapper modelMapper) {
+    private Validator validator;
+    public MonsterServiceImpl(MonsterRepository monsterRepository, ModelMapper modelMapper, Validator validator) {
         this.monsterRepository = monsterRepository;
         this.modelMapper = modelMapper;
+        this.validator = validator;
     }
 
     @Override
     public MonsterDTO create(MonsterDTO monsterDTO) {
         Monster monster = modelMapper.map(monsterDTO, Monster.class);
+        Set<ConstraintViolation<Monster>> constraintViolations = validator.validate(monster);
+        if (!constraintViolations.isEmpty())
+            throw new ConstraintViolationException(constraintViolations);
         monster = monsterRepository.save(monster);
         return modelMapper.map(monster, MonsterDTO.class);
     }
@@ -86,7 +96,10 @@ public class MonsterServiceImpl implements MonsterService {
 
     @Override
     public List<MonsterDTO> getAll() {
-        return null;
+         return monsterRepository.findAll()
+                 .stream()
+                 .map(monster -> modelMapper.map(monster, MonsterDTO.class))
+                 .collect(toList());
     }
 
 }

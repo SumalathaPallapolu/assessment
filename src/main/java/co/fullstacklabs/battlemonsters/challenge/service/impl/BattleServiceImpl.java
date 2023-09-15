@@ -80,7 +80,7 @@ public class BattleServiceImpl implements BattleService {
 
     @Override
     public void delete(int id) {
-        monsterRepository.deleteById(id);
+        battleRepository.deleteById(id);
     }
 
     private Optional<Monster> turn(Monster attacker, Monster defendant) {

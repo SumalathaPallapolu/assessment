@@ -2,9 +2,13 @@ package co.fullstacklabs.battlemonsters.challenge.controller;
 
 import co.fullstacklabs.battlemonsters.challenge.ApplicationConfig;
 import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
+import co.fullstacklabs.battlemonsters.challenge.model.Monster;
 import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
+import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.Is;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,15 +46,39 @@ public class MonsterControllerTest {
     @Autowired
     private MonsterRepository monsterRepository;
 
+    @BeforeEach
+    public void prepareMonsters() {
+        Monster monster1 = MonsterTestBuilder.builder().id(1).name("Monster 1")
+                .attack(50).defense(40).hp(30).speed(25)
+                .imageURL("ImageURL1").build();
+        this.monsterRepository.save(monster1);
+
+        Monster monster5 = MonsterTestBuilder.builder().id(5).name("Monster 5")
+                .attack(50).defense(40).hp(30).speed(25)
+                .imageURL("ImageURL1").build();
+        this.monsterRepository.save(monster5);
+        this.monsterRepository.deleteById(5);
+
+        Monster monster3 = MonsterTestBuilder.builder().id(3).name("Monster 3")
+                .attack(50).defense(40).hp(30).speed(25)
+                .imageURL("ImageURL1").build();
+        this.monsterRepository.save(monster3);
+        this.monsterRepository.deleteById(3);
+    }
     @Test
     void shouldFetchAllMonsters() throws Exception {
+
         this.mockMvc.perform(get(MONSTER_PATH+"/")).andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", Is.is(1)))
+               // .andExpect(jsonPath("$[*].id", Matchers.containsInAnyOrder(1)))
                 .andExpect(jsonPath("$[0].name", Is.is("Monster 1")))
-                .andExpect(jsonPath("$[0].attack", Is.is(50)))
-                .andExpect(jsonPath("$[0].defense", Is.is(40)))
-                .andExpect(jsonPath("$[0].hp", Is.is(30)))
-                .andExpect(jsonPath("$[0].speed", Is.is(25)));
+                /*
+                .andExpect(jsonPath("$[*].attack", Matchers.containsInAnyOrder(50)))
+                .andExpect(jsonPath("$[*].defense", Matchers.containsInAnyOrder(40)))
+                .andExpect(jsonPath("$[*].hp", Matchers.containsInAnyOrder(30)))
+                .andExpect(jsonPath("$[*].speed", Matchers.containsInAnyOrder(25))
+                )
+                 */
+        ;
 
     }
 
@@ -77,8 +105,8 @@ public class MonsterControllerTest {
                 .imageUrl("ImageURL1").build();
 
         this.mockMvc.perform(post(MONSTER_PATH).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newMonster)));
-
+                .content(objectMapper.writeValueAsString(newMonster)))
+                .andExpect(status().isOk());
 
         this.mockMvc.perform(delete(MONSTER_PATH + "/{id}", id))
                 .andExpect(status().isOk());

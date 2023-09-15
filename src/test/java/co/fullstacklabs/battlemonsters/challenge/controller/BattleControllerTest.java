@@ -9,11 +9,13 @@ import co.fullstacklabs.battlemonsters.challenge.repository.BattleRepository;
 import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.BattleTestBuilder;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,14 +45,24 @@ public class BattleControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ModelMapper mapper;
+
+    private Battle b;
+
+    private Monster godzilla, mothra;
     @BeforeEach
     void prepareBattle() {
-        Battle b = BattleTestBuilder.builder()
-                .monsterA(MonsterTestBuilder.builder()
-                        .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageURL("http://images.com/godzilla")
-                        .build())
-                .monsterB(MonsterTestBuilder.builder()
-                        .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageURL("http://images.com/mothra").build())
+        godzilla = MonsterTestBuilder.builder()
+                .id(1)
+                .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageURL("http://images.com/godzilla")
+                .build();
+        mothra = MonsterTestBuilder.builder()
+                .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageURL("http://images.com/mothra")
+                .build();
+        b = BattleTestBuilder.builder()
+                .monsterA(godzilla)
+                .monsterB(mothra)
                 .build();
         battleRepository.save(b);
     }
@@ -62,22 +74,28 @@ public class BattleControllerTest {
     }
     
     @Test
-    void shouldFailBattleWithNonExistentMonster() {
+    void shouldFailBattleWithNonExistentMonster() throws Exception {
+        BattleDTO battle = BattleDTO.builder()
+                .monsterA(mapper.map(godzilla, MonsterDTO.class))
+                .monsterB(MonsterDTO.builder()
+                        .id(90000)
+                        .name("Not exists").hp(100).speed(30).attack(50).defense(20).imageUrl("http://images.com/empty_placeholder")
+                        .build())
+                .build();
 
-
-        assertEquals(1, 0);
+        monsterRepository.save(godzilla);
+        this.mockMvc
+                .perform(post(BATTLE_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(battle)))
+                .andExpect(status().isUnprocessableEntity())
+                .andReturn();
     }
     @Test
     void shouldInsertBattleWithMonsterBWinning() throws Exception {
-        MonsterDTO godzilla = MonsterDTO.builder()
-                .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageUrl("http://images.com/godzilla")
-                .build();
-        MonsterDTO mothra = MonsterDTO.builder()
-                .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageUrl("http://images.com/mothra")
-                .build();
         BattleDTO battle = BattleDTO.builder()
-                .monsterA(godzilla)
-                .monsterB(mothra)
+                .monsterA(mapper.map(godzilla, MonsterDTO.class))
+                .monsterB(mapper.map(mothra, MonsterDTO.class))
                 .build();
 
         this.mockMvc
@@ -93,20 +111,13 @@ public class BattleControllerTest {
     MonsterRepository monsterRepository;
     @Test
     void shouldDeleteBattleSuccessfully() throws Exception {
-        Monster godzilla = MonsterTestBuilder.builder()
-                .name("Godzilla").hp(100).speed(100).attack(40).defense(40).imageURL("http://images.com/godzilla")
-                .build();
-        Monster mothra = MonsterTestBuilder.builder()
-                .name("Mothra").hp(100).speed(30).attack(50).defense(20).imageURL("http://images.com/mothra")
-                .build();
         Battle battle = BattleTestBuilder.builder()
+                .id(100)
                 .monsterA(godzilla)
                 .monsterB(mothra)
                 .build();
-        monsterRepository.save(godzilla);
-        monsterRepository.save(mothra);
+
         battleRepository.save(battle);
-        battleRepository.flush();
 
         mockMvc
                 .perform(delete(BATTLE_PATH+"/"+battle.getId()))

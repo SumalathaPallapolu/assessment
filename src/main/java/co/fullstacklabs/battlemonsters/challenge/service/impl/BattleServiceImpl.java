@@ -46,15 +46,15 @@ public class BattleServiceImpl implements BattleService {
 
     @Override
     public BattleDTO fight(BattleDTO battleDTO) {
+        this.monsterRepository.getById(battleDTO.getMonsterA().getId());
+        this.monsterRepository.getById(battleDTO.getMonsterB().getId());
+
         Battle battle = modelMapper.map(battleDTO, Battle.class);
         this.fight(battle);
         return modelMapper.map(battle, BattleDTO.class);
     }
 
     public Battle fight(Battle battle) {
-        monsterRepository.save(battle.getMonsterA());
-        monsterRepository.save(battle.getMonsterB());
-
         List<Monster> monsters = List.of(battle.getMonsterA(), battle.getMonsterB());
         Optional<Monster> fasterMonster = monsters.stream()
                 .min(comparingInt(Monster::getSpeed));

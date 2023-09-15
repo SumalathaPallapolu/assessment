@@ -85,7 +85,7 @@ public class BattleServiceImpl implements BattleService {
 
     private Optional<Monster> turn(Monster attacker, Monster defendant) {
         int damage = attacker.getAttack() <= defendant.getDefense()?1:attacker.getAttack() - defendant.getDefense();
-        defendant.setHp(defendant.getHp() -damage);
+        defendant.setHp(defendant.getHp() - damage);
         monsterRepository.save(defendant);
         return Optional.ofNullable(defendant.getHp() <= 0?attacker:null);
     }

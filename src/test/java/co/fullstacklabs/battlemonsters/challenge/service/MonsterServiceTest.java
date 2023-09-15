@@ -21,6 +21,8 @@ import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
 import co.fullstacklabs.battlemonsters.challenge.service.impl.MonsterServiceImpl;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
 
+import javax.validation.Validator;
+
 /**
  * @author FullStack Labs
  * @version 1.0
@@ -36,6 +38,8 @@ public class MonsterServiceTest {
 
     @Mock
     private ModelMapper mapper;
+    @Mock
+    private Validator validator;
 
    @Test
    public void testGetAll() {

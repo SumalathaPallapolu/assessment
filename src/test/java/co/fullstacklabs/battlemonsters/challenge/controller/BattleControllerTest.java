@@ -9,10 +9,8 @@ import co.fullstacklabs.battlemonsters.challenge.repository.BattleRepository;
 import co.fullstacklabs.battlemonsters.challenge.repository.MonsterRepository;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.BattleTestBuilder;
 import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -24,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

@@ -1,18 +1,15 @@
 package co.fullstacklabs.battlemonsters.challenge.controller;
 
-import java.util.List;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
-import org.springframework.web.bind.annotation.*;
-
 import co.fullstacklabs.battlemonsters.challenge.dto.BattleDTO;
 import co.fullstacklabs.battlemonsters.challenge.service.BattleService;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author FullStack Labs

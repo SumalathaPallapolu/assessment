@@ -38,7 +38,7 @@ public class MonsterControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //@Test    
+    @Test    
     void shouldFetchAllMonsters() throws Exception {
         this.mockMvc.perform(get(MONSTER_PATH)).andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", Is.is(1)))
@@ -90,13 +90,13 @@ public class MonsterControllerTest {
     
      @Test
      void testImportCsvSucessfully() throws Exception {
-         //TOOD: Implement take as a sample data/monstere-correct.csv
+         //TODO: Implement take as a sample data/monstere-correct.csv
          assertEquals(1, 1);
      }
      
      @Test
      void testImportCsvInexistenctColumns() throws Exception {
-         //TOOD: Implement take as a sample data/monsters-wrong-column.csv
+         //TODO: Implement take as a sample data/monsters-wrong-column.csv
          assertEquals(1, 1);
      }
      

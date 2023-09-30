@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import co.fullstacklabs.battlemonsters.challenge.dto.BattleDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +31,8 @@ import co.fullstacklabs.battlemonsters.challenge.service.MonsterService;
 @Service
 public class MonsterServiceImpl implements MonsterService {
 
-    private MonsterRepository monsterRepository;
-    private ModelMapper modelMapper;
+    private transient MonsterRepository monsterRepository;
+    private transient ModelMapper modelMapper;
 
     public MonsterServiceImpl(MonsterRepository monsterRepository, ModelMapper modelMapper) {
         this.monsterRepository = monsterRepository;
@@ -55,9 +58,15 @@ public class MonsterServiceImpl implements MonsterService {
     }
 
     @Override
+    public List<MonsterDTO> getAll() {
+        List<Monster> monsterList = monsterRepository.findAll();
+        return monsterList.stream().map(monster -> modelMapper.map(monster, MonsterDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public MonsterDTO update(MonsterDTO monsterDTO) {
-        Monster monster = findMonsterById(monsterDTO.getId());
-        monster = modelMapper.map(monsterDTO, Monster.class);        
+        Monster monster = modelMapper.map(monsterDTO, Monster.class);
         monsterRepository.save(monster);
         return modelMapper.map(monster, MonsterDTO.class);
 

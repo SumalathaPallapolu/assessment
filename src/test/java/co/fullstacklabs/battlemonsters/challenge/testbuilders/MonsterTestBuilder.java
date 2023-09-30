@@ -31,7 +31,16 @@ public class MonsterTestBuilder {
         private Integer hp = 30;
         private Integer speed = 25;
         private String imageURL = "http://www.dummymnonster.com/1";
-
-        
     }
+
+    public static class MonsterBuilder {
+        private Integer id = 2;
+        private String name = "Monster 2";
+        private Integer attack = 90;
+        private Integer defense = 90;
+        private Integer hp = 99;
+        private Integer speed = 95;
+        private String imageURL = "http://www.dummymnonster.com/2";
+    }
+}
 }

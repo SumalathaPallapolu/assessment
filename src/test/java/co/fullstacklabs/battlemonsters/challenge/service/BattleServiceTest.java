@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import co.fullstacklabs.battlemonsters.challenge.model.Monster;
+import co.fullstacklabs.battlemonsters.challenge.testbuilders.MonsterTestBuilder;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,6 +63,8 @@ public class BattleServiceTest {
     @Test
     void shouldInsertBattleWithMonsterBWinning() {
         //TODO: Implement
+        Monster monsterA = MonsterTestBuilder(1, "MonA", 34, 50, 75, 50, "image.com");
+        Monster monsterB = MonsterTestBuilder(1, "MonA", 88, 89, 95, 98, "image.com");
           assertEquals(1, 1);    
     }
 

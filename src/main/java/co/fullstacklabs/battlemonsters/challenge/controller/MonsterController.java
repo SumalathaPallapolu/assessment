@@ -29,7 +29,7 @@ import co.fullstacklabs.battlemonsters.challenge.service.MonsterService;
 public class MonsterController {
     
     @Autowired
-    private MonsterService monsterService;
+    private transient MonsterService monsterService;
 
     @GetMapping("/{id}")
     public MonsterDTO getMonsterById(@PathVariable("id") int monsterId) {

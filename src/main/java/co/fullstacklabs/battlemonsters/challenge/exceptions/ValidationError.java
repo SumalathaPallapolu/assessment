@@ -9,7 +9,7 @@ import java.util.List;
  * @since 2022-10
  */
 public class ValidationError {
-    private List<ErrorDetails> violations = new ArrayList<>();
+    private  transient List<ErrorDetails> violations = new ArrayList<>();
 
     public List<ErrorDetails> getViolations() {
         return violations;

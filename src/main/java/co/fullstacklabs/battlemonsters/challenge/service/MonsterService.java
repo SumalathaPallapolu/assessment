@@ -1,6 +1,7 @@
 package co.fullstacklabs.battlemonsters.challenge.service;
 
 import java.io.InputStream;
+import java.util.List;
 
 import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
 
@@ -14,6 +15,8 @@ public interface MonsterService {
     MonsterDTO create(MonsterDTO monsterDTO);
 
     MonsterDTO findById(int id);
+
+    List<MonsterDTO> getAll();
 
     MonsterDTO update(MonsterDTO monsterDTO);
 

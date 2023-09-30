@@ -6,6 +6,8 @@ package co.fullstacklabs.battlemonsters.challenge.exceptions;
  * @since 2022-10
  */
 public class ResourceNotFoundException extends RuntimeException{
+    public static final long serialVersionUID = 4328743;
+
     public ResourceNotFoundException(final String message) {
         super(message);
     }

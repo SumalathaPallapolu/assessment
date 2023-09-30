@@ -6,6 +6,9 @@ package co.fullstacklabs.battlemonsters.challenge.exceptions;
  * @since 2022-10
  */
 public class UnprocessableFileException extends RuntimeException {
+
+    public static final long serialVersionUID = 4328745;
+
     public UnprocessableFileException(String message){
         super(message);
     }

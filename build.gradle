@@ -9,6 +9,15 @@ plugins {
     id 'pmd'
 }
 
+bootRun {
+    jvmArgs = ['-Xverify:none','-Xms256m', '-Xmx512m']
+}
+
+pmd {
+    ruleSets = ["${projectDir}/config/pmd-java.xml"]
+    maxFailures = 4
+}
+
 repositories {
     mavenLocal()
     maven {
@@ -20,7 +29,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.6'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.5.6'
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.5.6'
-    implementation 'org.projectlombok:lombok:1.18.22'
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testCompileOnly 'org.projectlombok:lombok:1.18.22'

@@ -2,7 +2,7 @@ spring:
   jmx:
     enabled: false
   main:
-    lazy-initialization: false
+    lazy-initialization: true
   datasource:
     url: jdbc:sqlite:assesment.sqlite
     username: admin

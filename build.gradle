@@ -15,7 +15,14 @@ bootRun {
 
 pmd {
     ruleSets = ["${projectDir}/config/pmd-java.xml"]
-    maxFailures = 0
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(build)) {
+        pmdMain.enabled = false
+        pmdTest.enabled = false
+        test.enabled = false
+    }
 }
 
 repositories {

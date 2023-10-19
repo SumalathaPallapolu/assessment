@@ -15,7 +15,7 @@ bootRun {
 
 pmd {
     ruleSets = ["${projectDir}/config/pmd-java.xml"]
-    maxFailures = 4
+    maxFailures = 0
 }
 
 repositories {

@@ -38,7 +38,7 @@ public class MonsterServiceTest {
     @Mock
     private ModelMapper mapper;
 
-   //@Test
+   @Test
    public void testGetAll() {
        String monsterName1 = "Monster 1";
        String monsterName2 = "Monster 2";

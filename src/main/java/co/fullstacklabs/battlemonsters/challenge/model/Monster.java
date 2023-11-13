@@ -45,4 +45,8 @@ public class Monster {
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
+
+    public boolean hasHp() {
+        return this.getHp() > 0;
+    }
 }

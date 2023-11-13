@@ -1,6 +1,7 @@
 package co.fullstacklabs.battlemonsters.challenge.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,9 +28,14 @@ import co.fullstacklabs.battlemonsters.challenge.service.MonsterService;
 @RestController
 @RequestMapping("/monster")
 public class MonsterController {
-    
+
     @Autowired
     private MonsterService monsterService;
+
+    @GetMapping
+    public List<MonsterDTO> getAll() {
+        return monsterService.getAll();
+    }
 
     @GetMapping("/{id}")
     public MonsterDTO getMonsterById(@PathVariable("id") int monsterId) {
@@ -50,10 +56,9 @@ public class MonsterController {
     public void delete(@PathVariable("id") int monsterId) {
         monsterService.delete(monsterId);
     }
-    
+
     @PostMapping("/import")
-    public void importCsv(@RequestParam("file") MultipartFile file, 
-            RedirectAttributes redirectAttributes) {
+    public void importCsv(@RequestParam("file") MultipartFile file) {
         try{
             monsterService.importFromInputStream(file.getInputStream());
         } catch (IOException ex) {

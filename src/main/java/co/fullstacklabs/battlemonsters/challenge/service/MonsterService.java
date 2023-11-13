@@ -1,8 +1,10 @@
 package co.fullstacklabs.battlemonsters.challenge.service;
 
 import java.io.InputStream;
+import java.util.List;
 
 import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
+import co.fullstacklabs.battlemonsters.challenge.model.Monster;
 
 /**
  * @author FullStack Labs
@@ -10,7 +12,7 @@ import co.fullstacklabs.battlemonsters.challenge.dto.MonsterDTO;
  * @since 2022-10
  */
 public interface MonsterService {
-    
+
     MonsterDTO create(MonsterDTO monsterDTO);
 
     MonsterDTO findById(int id);
@@ -21,5 +23,7 @@ public interface MonsterService {
 
     void importFromInputStream(InputStream inputStream);
 
+  List<MonsterDTO> getAll();
 
+  Monster findMonsterById(int monsterAId);
 }

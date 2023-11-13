@@ -1,7 +1,9 @@
 package co.fullstacklabs.battlemonsters.challenge.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -45,19 +47,19 @@ public class MonsterServiceTest {
        Monster monster1 = MonsterTestBuilder.builder().id(1)
                .name(monsterName1).attack(30).defense(20).hp(21).speed(15)
                .imageURL("imageUrl1").build();
-   
+
        Monster monster2 = MonsterTestBuilder.builder().id(2)
                .name(monsterName2).attack(30).defense(20).hp(21).speed(15)
                .imageURL("imageUrl1").build();
-   
+
        List<Monster> monsterList = Arrays.asList(new Monster[]{monster1, monster2});
        Mockito.when(monsterRepository.findAll()).thenReturn(monsterList);
-       
+
        monsterService.getAll();
-   
+
        Mockito.verify(monsterRepository).findAll();
        Mockito.verify(mapper).map(monsterList.get(0), MonsterDTO.class);
-       Mockito.verify(mapper).map(monsterList.get(1), MonsterDTO.class);        
+       Mockito.verify(mapper).map(monsterList.get(1), MonsterDTO.class);
    }
 
     @Test
@@ -72,9 +74,9 @@ public class MonsterServiceTest {
 
     @Test
     public void testGetMonsterByIdNotExists() throws Exception {
-        int id = 1;        
-        Mockito.when(monsterRepository.findById(id)).thenReturn(Optional.empty());                
-        Assertions.assertThrows(ResourceNotFoundException.class, 
+        int id = 1;
+        Mockito.when(monsterRepository.findById(id)).thenReturn(Optional.empty());
+        Assertions.assertThrows(ResourceNotFoundException.class,
                                     () -> monsterService.findById(id));
     }
 
@@ -87,15 +89,22 @@ public class MonsterServiceTest {
 
         monsterService.delete(id);
 
-        Mockito.verify(monsterRepository).findById(id);        
+        Mockito.verify(monsterRepository).findById(id);
         Mockito.verify(monsterRepository).delete(monster1);
     }
 
      @Test
      void testImportCsvSucessfully() throws Exception {
-         //TODO: Implement take as a sample data/monstere-correct.csv
-         assertEquals(1, 1);
+         String filePath = "data/monsters-correct.csv";
+
+         try (InputStream inputStream = Files.newInputStream(Paths.get(filePath))) {
+           Mockito.when(mapper.map(Mockito.any(MonsterDTO.class), Mockito.eq(Monster.class))).thenReturn(new Monster());
+
+           monsterService.importFromInputStream(inputStream);
+
+           Mockito.verify(monsterRepository, Mockito.times(11)).save(Mockito.any(Monster.class));
+         }
      }
-     
+
 
 }

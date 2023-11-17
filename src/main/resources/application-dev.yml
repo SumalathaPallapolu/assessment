@@ -4,7 +4,7 @@ spring:
   main:
     lazy-initialization: true
   datasource:
-    url: jdbc:sqlite:assesment.sqlite
+    url: jdbc:sqlite:assessment-test.sqlite
     username: admin
     password: admin
     driverClassName: org.sqlite.JDBC
@@ -16,7 +16,7 @@ spring:
     password: admin
     schema: assessment-test
     locations:
-      - classpath:db-test/migration
+      - classpath:db/dev/migration
   spring:
     sqlite:
       console:
